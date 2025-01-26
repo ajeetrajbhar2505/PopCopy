@@ -16,7 +16,7 @@
     <div class="example">
       <div class="loader" *ngIf="extractingLinkLoader"></div>
       <ul>
-        <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}}</li>
+        <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}} - <button *ngIf="!item.copied" (click)="onCopyClick(item.link);item.copied = true">Copy Link</button></li>
       </ul>
     </div>
 

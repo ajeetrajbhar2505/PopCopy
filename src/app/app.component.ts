@@ -10,7 +10,7 @@ export class AppComponent {
   finalparagraphToRead:string = ''
   readingloader:boolean = false
   extractingLinkLoader:boolean = false
-  extractedLinks:{ id: string; seasonNo: number; partNo: number }[] = [];
+  extractedLinks:{ id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
   currentBookParagraphs: string[] = [];
 
   // Method to copy text to clipboard
@@ -66,7 +66,7 @@ extractLinks(): string[] {
   }
 
   convertUrlsToStoryObjects(urls: string[]) {
-    const result: { id: string; seasonNo: number; partNo: number }[] = [];
+    const result: { id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
   
     urls.forEach(url => {
       // Step 1: Remove base URL and split by '-'
@@ -80,10 +80,12 @@ extractLinks(): string[] {
       // Step 3: Convert season and part to numbers, fallback to NaN if not a valid number
       const seasonNo = seasonMatch ? Number(seasonMatch) : NaN;
       const partNo = partMatch ? Number(partMatch) : NaN;
+      var copied = false
+      var link = `https://www.wattpad.com/apiv2/?m=storytext&id=${id}&page=${partNo}`
   
       // Step 4: Validate and push the result if all values are found
       if (id && !isNaN(seasonNo) && !isNaN(partNo)) {
-        result.push({ id, seasonNo, partNo });
+        result.push({ id, seasonNo, partNo,copied,link });
       }
     });
   
