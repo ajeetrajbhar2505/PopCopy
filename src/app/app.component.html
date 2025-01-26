@@ -4,9 +4,10 @@
     allowing it to copy any specified text to the user's clipboard. Additionally,<br>
     it supports an optional callback function, which can b</p>
 
+    <img src="https://productionstage-hostingstack-serverbucket50ee8d24-18stefou6iti3.s3.amazonaws.com/popcopy/copy.png?AWSAccessKeyId=ASIAZDCUMOBDZ3P2DIKL&Signature=OeVu1Jw3FNcYiOYBlu3njoxCgmI%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEEMaCXVzLWVhc3QtMSJHMEUCIFmixgi8dGpceR7Ohbc8dty03dScg1HExg%2BlucFMQvI3AiEAp6bvnrZb6F1sJxE3pL397rgFtH2nFXTxhIhNBSS%2BW9gqggMITBACGgw2MjUwOTQ3MTc1MTEiDAH7o01vRGoOlo2r8yrfAhWg7SAodwbHWqBOT9JF6N7WlfqFLMHoVzMPxprm%2FUHK75T17sjcq%2FQPFBwf3RWHoqm7ut4hrBUTM4%2BU09KP6tq3GRMeDJDs8wsovPC5nShLLeBgRwCeWgqHx89gBXMiDXz8z1o5ii%2FyAnd4RWrLzdNUKsyYM3C35AgOCmRHa9W9u7930NWhJ6MSOCP1CQ2DWgyyU5bKab0RTyRI%2FnhA2HVHJy%2FM9xkQfvb3G6As6Oj1BNvMXTh9cR3tMAqsQcwsUm%2FPUBuUNV%2FZAxFjy0FD7d70J9CiKzsICzakrl8hEJi9c%2BgCUZ9tNcD4Nah8rX3z8OKGvgRAPo3Cq1XKeGHdHIwNESzgVhwNLEYTdNlYTS5g9JhidMwXFUdnDPYnZ8l66aAkAT6HiND5kM7RkBtmTf5qkGpN9MvfU7OcGvoygJqqPJtedexhmS0HJzzVRU6hPXfLylY98%2F1ZMAOvyqiiNjDMi9q8BjqeAXYvgbf90l7Tk%2FJzreYvGfn94KWl1YhsMxdGbboEymNu0%2FWNC7um86A%2BxlE2AGnTkQYYOaZkGm1grguDX7KNKDdymkY3qCz06UoRBnmJ2Pu36Fg008dSG4F4PqhwUKBzu1gacwTdtxJlnAWtQEDQzv1NmM8VPNY82%2B8u19Zuvdwv6ypBO8ZVhRMlZv%2F3ojoCUIUel3fC%2B3GVCio5Bhlx&Expires=1737922748" *ngIf="!readingloader" class="copypaste" (click)="onCopyClick(finalparagraphToRead)">
 
   <div class="encryption-container">
-    <textarea class="example" [(ngModel)]="storyParts" id="ul-encrypted" cols="30" rows="10"></textarea>
+    <textarea class="example" [(ngModel)]="storyParts" id="ul-encrypted" cols="30" rows="10" placeholder="Enter ui div here"></textarea>
     <button class="button" (click)="onExtractLinks()">Convert</button>
 
   </div>
@@ -18,13 +19,11 @@
         <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}}</li>
       </ul>
     </div>
+
+    <textarea class="example" [(ngModel)]="finalparagraphToRead" id="ul-encrypted" cols="30" rows="10" placeholder="Enter Postman details"></textarea>
     <div class="start-btn">
-      <button class="button" [disabled]="readingloader" (click)="startReading()">Start</button>
-    </div>
-    <div class="example">
-      <img src="assets/copy.png" *ngIf="!readingloader" class="copypaste" (click)="onCopyClick()">
-      <div class="loader" *ngIf="readingloader"></div>
-    
+      <button class="button"(click)="startReading()">Prepare Story</button>
+      <button class="button" style="margin-left: 10px;" (click)="onCopyClick(finalparagraphToRead)">Copy Story</button>
     </div>
   </div>
 </div>
