@@ -13,19 +13,18 @@
 
   <div class="encryption-container">
     <div class="example">
+      <div class="loader" *ngIf="extractingLinkLoader"></div>
       <ul>
         <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}}</li>
       </ul>
     </div>
     <div class="start-btn">
-      <button class="button" (click)="startReading()">Start</button>
+      <button class="button" [disabled]="readingloader" (click)="startReading()">Start</button>
     </div>
     <div class="example">
-      <img src="assets/copy.png" *ngIf="!loading" class="copypaste" (click)="onCopyClick()">
-      <div class="loader" *ngIf="loading"></div>
-      <ul>
-        <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}}</li>
-      </ul>
+      <img src="assets/copy.png" *ngIf="!readingloader" class="copypaste" (click)="onCopyClick()">
+      <div class="loader" *ngIf="readingloader"></div>
+    
     </div>
   </div>
 </div>
