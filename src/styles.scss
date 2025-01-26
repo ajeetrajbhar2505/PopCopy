@@ -1,1 +1,83 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    background-color: #232323;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.container {
+    padding: 20px;
+    color: rgb(212, 212, 212);
+    text-align: center;
+}
+.encryption-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    img{
+        transform: rotate(90deg);
+    }
+}
+
+.iconcircle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 100px;
+    background-color: rgb(38, 166, 154);
+    overflow: hidden;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 auto;
+    img{
+        width: 150px;
+    }
+}
+
+.iconcircle .shadowicon {
+    color: #fff;
+    font-size: 45px;
+    text-shadow: 1px 1px #00796b, 2px 2px #00796b, 3px 3px #00796b, 4px 4px #00796b, 5px 5px #00796b, 6px 6px #00796b, 7px 7px #00796b, 8px 8px #00796b, 9px 9px #00796b, 10px 10px #00796b, 11px 11px #00796b, 12px 12px #00796b, 13px 13px #00796b, 14px 14px #00796b, 15px 15px #00796b, 16px 16px #00796b, 17px 17px #00796b, 18px 18px #00796b, 19px 19px #00796b, 20px 20px #00796b, 21px 21px #00796b, 22px 22px #00796b, 23px 23px #00796b, 24px 24px #00796b, 25px 25px #00796b, 26px 26px #00796b, 27px 27px #00796b, 28px 28px #00796b, 29px 29px #00796b, 30px 30px #00796b, 31px 31px #00796b, 32px 32px #00796b, 33px 33px #00796b, 34px 34px #00796b, 35px 35px #00796b, 36px 36px #00796b, 37px 37px #00796b, 38px 38px #00796b, 39px 39px #00796b, 40px 40px #00796b, 41px 41px #00796b, 42px 42px #00796b, 43px 43px #00796b, 44px 44px #00796b, 45px 45px #00796b, 46px 46px #00796b, 47px 47px #00796b, 48px 48px #00796b, 49px 49px #00796b, 50px 50px #00796b, 51px 51px #00796b, 52px 52px #00796b, 53px 53px #00796b, 54px 54px #00796b, 55px 55px #00796b, 56px 56px #00796b, 57px 57px #00796b, 58px 58px #00796b, 59px 59px #00796b, 60px 60px #00796b, 61px 61px #00796b, 62px 62px #00796b, 63px 63px #00796b, 64px 64px #00796b, 65px 65px #00796b, 66px 66px #00796b, 67px 67px #00796b, 68px 68px #00796b, 69px 69px #00796b, 70px 70px #00796b, 71px 71px #00796b, 72px 72px #00796b, 73px 73px #00796b, 74px 74px #00796b, 75px 75px #00796b, 76px 76px #00796b, 77px 77px #00796b, 78px 78px #00796b, 79px 79px #00796b, 80px 80px #00796b, 81px 81px #00796b, 82px 82px #00796b, 83px 83px #00796b, 84px 84px #00796b, 85px 85px #00796b, 86px 86px #00796b, 87px 87px #00796b, 88px 88px #00796b, 89px 89px #00796b, 90px 90px #00796b, 91px 91px #00796b, 92px 92px #00796b, 93px 93px #00796b, 94px 94px #00796b, 95px 95px #00796b, 96px 96px #00796b, 97px 97px #00796b, 98px 98px #00796b, 99px 99px #00796b, 100px 100px #00796b, 101px 101px #00796b, 102px 102px #00796b, 103px 103px #00796b, 104px 104px #00796b, 105px 105px #00796b, 106px 106px #00796b, 107px 107px #00796b, 108px 108px #00796b, 109px 109px #00796b, 110px 110px #00796b, 111px 111px #00796b, 112px 112px #00796b, 113px 113px #00796b, 114px 114px #00796b, 115px 115px #00796b, 116px 116px #00796b, 117px 117px #00796b, 118px 118px #00796b, 119px 119px #00796b
+}
+
+.example,.example:hover {
+    background-color: #191919;
+    color: #fff;
+    text-align: left;
+    padding: 25px 35px;
+    border-radius: 3px;
+    margin-top: 20px;
+    font-family: 'Roboto Mono';
+    outline: unset;
+}
+
+.tab {
+    margin-left: 2em;
+}
+
+.grey {
+    color: #696969;
+}
+
+.blue {
+    color: rgb(137, 184, 245);
+}
+
+.green {
+    color: rgb(175, 214, 136);
+}
+
+.purple {
+    color: rgb(187, 137, 187);
+}
+
+/* span{
+    displau
+} */
