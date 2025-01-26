@@ -1,15 +1,31 @@
 <div class="container">
   <h1>PopCopy</h1>
-  <p>This is a simple helper function that adds a 'click' event listener to a DOM element,<br> 
-    allowing it to copy any specified text to the user's clipboard. Additionally,<br> 
+  <p>This is a simple helper function that adds a 'click' event listener to a DOM element,<br>
+    allowing it to copy any specified text to the user's clipboard. Additionally,<br>
     it supports an optional callback function, which can b</p>
 
-  <div id="elementId" class="iconcircle" (click)="onCopyClick()">
-      <img src="assets/copy.png" class="shadowicon" (click)="onCopyClick()">
-  </div>
+
   <div class="encryption-container">
-    <textarea class="example" id="ul-encrypted" cols="30" rows="10" ></textarea>
-    <img src="assets/arrow.png" alt="">
-    <textarea class="example" id="ul-decrypted" cols="30" rows="10" ></textarea>
+    <textarea class="example" [(ngModel)]="storyParts" id="ul-encrypted" cols="30" rows="10"></textarea>
+    <button class="button" (click)="onExtractLinks()">Convert</button>
+
+  </div>
+
+  <div class="encryption-container">
+    <div class="example">
+      <ul>
+        <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}}</li>
+      </ul>
+    </div>
+    <div class="start-btn">
+      <button class="button" (click)="startReading()">Start</button>
+    </div>
+    <div class="example">
+      <img src="assets/copy.png" *ngIf="!loading" class="copypaste" (click)="onCopyClick()">
+      <div class="loader" *ngIf="loading"></div>
+      <ul>
+        <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}}</li>
+      </ul>
+    </div>
   </div>
 </div>
