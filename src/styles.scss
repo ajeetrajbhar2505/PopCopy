@@ -380,6 +380,12 @@
     background-color: white;
     padding: 25px;
     overflow: auto;
+    position: relative;
+    .copy-button{
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
   }
   .mes-date {
     color: grey;

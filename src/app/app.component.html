@@ -31,27 +31,11 @@
           <div class="avatar">
             <div class="online">
             </div>
-            <img src="https://randomuser.me/api/portraits/women/65.jpg" />
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" />
           </div>
-          <div class="names">Don Allen
+          <div class="names">Kuldeep Rajbhar
           </div>
 
-        </div>
-        <div class="folder-icons">
-          <div class="avatar">
-            <div class="online">
-            </div>
-            <img src="https://randomuser.me/api/portraits/women/71.jpg" />
-          </div>
-          <div class="names">Aaron Tim</div>
-        </div>
-        <div class="folder-icons">
-          <div class="avatar">
-            <div class="online red">
-            </div>
-            <img src="https://randomuser.me/api/portraits/men/54.jpg" />
-          </div>
-          <div class="names">Jack Joe</div>
         </div>
   
       </div>
@@ -109,7 +93,7 @@
           <input type="text" [(ngModel)]="storyParts">
           <button class="btn2 butona" (click)="onExtractLinks()"> Process
             <span class="tag"> 
-            <img src="https://i.ibb.co/GQf8frw/reply.png"/>
+             <img src="https://i.ibb.co/6W40kTg/forward-arrow.png"/>
             </span>
          </button>
         </div>
@@ -117,22 +101,18 @@
 
       </div>
       <div class="message">
-        <div class="mes-date">
-          {{today}}
-        </div>
         <div class="from">
           <span class="who">From: </span>PopCopy
+        </div>
+        <div class="mes-date">
+          Today's Date  : {{today}}
         </div>
         <div class="message-from">
       <div class="loader" *ngIf="readingloader"></div>
            {{finalparagraphToRead}}
         </div>
 
-        <button class="btn2 butonb" *ngIf="finalparagraphToRead" (click)="onCopyClick(finalparagraphToRead)"> Copy
-            <span class="tag"> 
-             <img src="https://i.ibb.co/6W40kTg/forward-arrow.png"/>
-             </span>
-          </button>
+             <img class="copy-button" src="assets/copy.jpg"/>
       </div>
     </div>
   </div>

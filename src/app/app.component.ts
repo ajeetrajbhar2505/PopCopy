@@ -10,7 +10,11 @@ export class AppComponent {
   storyParts:string = ""
   finalparagraphToRead:string = ''
   readingloader:boolean = false
-  today = new Date().toLocaleDateString()
+  today  = new Date('2025-01-27').toLocaleDateString('en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
   extractingLinkLoader:boolean = false
   extractedLinks:{ id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
   currentBookParagraphs: string[] = [];
