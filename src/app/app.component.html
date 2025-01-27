@@ -1,29 +1,138 @@
-<div class="container">
-  <h1>PopCopy</h1>
-  <p>This is a simple helper function that adds a 'click' event listener to a DOM element,<br>
-    allowing it to copy any specified text to the user's clipboard. Additionally,<br>
-    it supports an optional callback function, which can b</p>
+<div class="dashboard">
+  <div class="left">
+    <div class="navigation">
+      <div class="wrapper2">
+        <div class="folders">PopCopy</div>
+        <div class="folder-icons">
+          <div class="icon1">
+            <img src="https://i.ibb.co/qdgf3TJ/envelope.png" />
+          </div>
+          <div class="icon-name1">Dashboard
+          </div>
+        </div>
+            <div class="folder-icons">
+          <div class="icon1">
+            <img src="https://i.ibb.co/6ZH9kK3/star.png" />
+          </div>
+          <div class="icon-name">Trendings</div>
+        </div>
+        <div class="folder-icons">
+          <div class="icon1">
+            <img src="https://i.ibb.co/2yLfX9W/sent-mail.png" />
+          </div>
+          <div class="icon-name">Shared Story</div>
+        </div>
+    
+   
+        <div class="folders">
+          Online Friends
+        </div>
+        <div class="folder-icons">
+          <div class="avatar">
+            <div class="online">
+            </div>
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" />
+          </div>
+          <div class="names">Don Allen
+          </div>
 
-    <img src="https://productionstage-hostingstack-serverbucket50ee8d24-18stefou6iti3.s3.amazonaws.com/popcopy/copy.png?AWSAccessKeyId=ASIAZDCUMOBDZ3P2DIKL&Signature=OeVu1Jw3FNcYiOYBlu3njoxCgmI%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEEMaCXVzLWVhc3QtMSJHMEUCIFmixgi8dGpceR7Ohbc8dty03dScg1HExg%2BlucFMQvI3AiEAp6bvnrZb6F1sJxE3pL397rgFtH2nFXTxhIhNBSS%2BW9gqggMITBACGgw2MjUwOTQ3MTc1MTEiDAH7o01vRGoOlo2r8yrfAhWg7SAodwbHWqBOT9JF6N7WlfqFLMHoVzMPxprm%2FUHK75T17sjcq%2FQPFBwf3RWHoqm7ut4hrBUTM4%2BU09KP6tq3GRMeDJDs8wsovPC5nShLLeBgRwCeWgqHx89gBXMiDXz8z1o5ii%2FyAnd4RWrLzdNUKsyYM3C35AgOCmRHa9W9u7930NWhJ6MSOCP1CQ2DWgyyU5bKab0RTyRI%2FnhA2HVHJy%2FM9xkQfvb3G6As6Oj1BNvMXTh9cR3tMAqsQcwsUm%2FPUBuUNV%2FZAxFjy0FD7d70J9CiKzsICzakrl8hEJi9c%2BgCUZ9tNcD4Nah8rX3z8OKGvgRAPo3Cq1XKeGHdHIwNESzgVhwNLEYTdNlYTS5g9JhidMwXFUdnDPYnZ8l66aAkAT6HiND5kM7RkBtmTf5qkGpN9MvfU7OcGvoygJqqPJtedexhmS0HJzzVRU6hPXfLylY98%2F1ZMAOvyqiiNjDMi9q8BjqeAXYvgbf90l7Tk%2FJzreYvGfn94KWl1YhsMxdGbboEymNu0%2FWNC7um86A%2BxlE2AGnTkQYYOaZkGm1grguDX7KNKDdymkY3qCz06UoRBnmJ2Pu36Fg008dSG4F4PqhwUKBzu1gacwTdtxJlnAWtQEDQzv1NmM8VPNY82%2B8u19Zuvdwv6ypBO8ZVhRMlZv%2F3ojoCUIUel3fC%2B3GVCio5Bhlx&Expires=1737922748" *ngIf="!readingloader" class="copypaste" (click)="onCopyClick(finalparagraphToRead)">
-
-  <div class="encryption-container">
-    <textarea class="example" [(ngModel)]="storyParts" id="ul-encrypted" cols="30" rows="10" placeholder="Enter ui div here"></textarea>
-    <button class="button" (click)="onExtractLinks()">Convert</button>
-
-  </div>
-
-  <div class="encryption-container">
-    <div class="example">
-      <div class="loader" *ngIf="extractingLinkLoader"></div>
-      <ul>
-        <li *ngFor="let item of extractedLinks">{{ 'Season ' + item.seasonNo + ' - Part' + item.partNo}} - <button *ngIf="!item.copied" (click)="onCopyClick(item.link);item.copied = true">Copy Link</button></li>
-      </ul>
+        </div>
+        <div class="folder-icons">
+          <div class="avatar">
+            <div class="online">
+            </div>
+            <img src="https://randomuser.me/api/portraits/women/71.jpg" />
+          </div>
+          <div class="names">Aaron Tim</div>
+        </div>
+        <div class="folder-icons">
+          <div class="avatar">
+            <div class="online red">
+            </div>
+            <img src="https://randomuser.me/api/portraits/men/54.jpg" />
+          </div>
+          <div class="names">Jack Joe</div>
+        </div>
+  
+      </div>
     </div>
+  </div>
+  <div class="right-side">
+    <div class="right-header">
+      <div class="top-bar">
+        <div class="top-bar-justify">
+          <div class="big-inbox">
+            Stories
+          </div>
 
-    <textarea class="example" [(ngModel)]="finalparagraphToRead" id="ul-encrypted" cols="30" rows="10" placeholder="Enter Postman details"></textarea>
-    <div class="start-btn">
-      <button class="button"(click)="startReading()">Prepare Story</button>
-      <button class="button" style="margin-left: 10px;" (click)="onCopyClick(finalparagraphToRead)">Copy Story</button>
+          <div class="top-bar-items">
+            <div class="notif">
+              <div class="online pink">
+              </div>
+              <img src="https://i.ibb.co/VJm73Hz/notifications-button.png" />
+            </div>
+            <img src="https://i.ibb.co/vz4HYJb/envelope.png" />
+            <img src="https://i.ibb.co/52Vkq4M/earth-globe.png" />
+            <div class="icon-name5"> English </div>
+          </div>
+        </div>
+      </div>
+    
+    </div>
+    <div class="right-body">
+      <div class="scroll-cards">
+         <div class="folders" *ngIf="false">
+          Refine by tag:
+        </div>
+        <div class="section1" *ngIf="false">
+          <button class="btn buton1"> Important
+          <span class="tag">
+            <img src="https://i.ibb.co/Zdx3jGx/tag.png"/></span>
+          </button>
+
+          <button class="btn buton2"> New
+            <span class="tag">
+            <img src="https://i.ibb.co/N1SMfgQ/tag.png"/></span>
+          </button>
+        </div>
+        <div class="section2" *ngIf="false">
+          <button class="btn buton3"> Old
+             <span class="tag">
+            <img src="https://i.ibb.co/C5q0MDM/tag.png"/></span>
+           </button>
+          <button class="btn buton4"> Priority
+             <span class="tag">
+            <img src="https://i.ibb.co/DMmSZW0/tag.png"/></span>
+           </button>
+        </div>
+        <div class="input-button">
+          <input type="text" [(ngModel)]="storyParts">
+          <button class="btn2 butona" (click)="onExtractLinks()"> Process
+            <span class="tag"> 
+            <img src="https://i.ibb.co/GQf8frw/reply.png"/>
+            </span>
+         </button>
+        </div>
+    
+
+      </div>
+      <div class="message">
+        <div class="mes-date">
+          {{today}}
+        </div>
+        <div class="from">
+          <span class="who">From: </span>PopCopy
+        </div>
+        <div class="message-from">
+      <div class="loader" *ngIf="readingloader"></div>
+           {{finalparagraphToRead}}
+        </div>
+
+        <button class="btn2 butonb" *ngIf="finalparagraphToRead" (click)="onCopyClick(finalparagraphToRead)"> Copy
+            <span class="tag"> 
+             <img src="https://i.ibb.co/6W40kTg/forward-arrow.png"/>
+             </span>
+          </button>
+      </div>
     </div>
   </div>
-</div>

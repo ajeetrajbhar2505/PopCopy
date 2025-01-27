@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
@@ -9,9 +10,13 @@ export class AppComponent {
   storyParts:string = ""
   finalparagraphToRead:string = ''
   readingloader:boolean = false
+  today = new Date().toLocaleDateString()
   extractingLinkLoader:boolean = false
   extractedLinks:{ id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
   currentBookParagraphs: string[] = [];
+
+
+  constructor(private http:HttpClient){}
 
   // Method to copy text to clipboard
   copyToClipboard(text: string, callback?: () => void): void {
@@ -34,8 +39,7 @@ export class AppComponent {
 
   onCopyClick(textToCopy:string): void {
     this.copyToClipboard(textToCopy, () => {
-      console.log('Text copied to clipboard!');
-      // You can replace this with any other action, like showing a toast or changing UI state
+      alert('Text copied to clipboard!')
     });
   }
 
@@ -62,6 +66,8 @@ extractLinks(): string[] {
   onExtractLinks() {
     const links = this.extractLinks();
     this.extractedLinks = this.convertUrlsToStoryObjects(links)
+    console.log(this.extractedLinks);
+    this.startReading()
     this.extractingLinkLoader = !(this.extractedLinks.length > 0)
   }
 
@@ -78,8 +84,8 @@ extractLinks(): string[] {
       const partMatch = splitUrl[10]; // This might also be a string or undefined
   
       // Step 3: Convert season and part to numbers, fallback to NaN if not a valid number
-      const seasonNo = seasonMatch ? Number(seasonMatch) : NaN;
-      const partNo = partMatch ? Number(partMatch) : NaN;
+      const seasonNo = seasonMatch ? Number(seasonMatch) : 1;
+      const partNo = partMatch ? Number(partMatch) : 1;
       var copied = false
       var link = `https://www.wattpad.com/apiv2/?m=storytext&id=${id}&page=${partNo}`
   
@@ -93,14 +99,27 @@ extractLinks(): string[] {
   }
 
   removeHtmlTags(input: string): string {
-    return input.replace(/<[^>]*>/g, ''); // Regular expression to remove all HTML tags
+    return input.replace(/<\/?[^>]+(>|$)/g, "");  // Match all HTML tags
   }
-
+  
   getTextWithoutHtml(content: string): string {
     return this.removeHtmlTags(content);
   }
+  
 
   async startReading() {
-  this.finalparagraphToRead = this.getTextWithoutHtml(this.finalparagraphToRead)
+    this.readingloader = true;
+    this.http.post('http://localhost:3000/getAllBooks', this.extractedLinks).subscribe((response: any) => {
+      this.readingloader = false;
+      try {
+        debugger
+        const parsedData = response.books
+        this.finalparagraphToRead = this.getTextWithoutHtml(parsedData);
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+        // Optionally set a fallback or notify the user
+      }
+    });
   }
+  
 }
