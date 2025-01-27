@@ -68,6 +68,7 @@ extractLinks(): string[] {
 }
 
   onExtractLinks() {
+    this.finalparagraphToRead = ''
     const links = this.extractLinks();
     this.extractedLinks = this.convertUrlsToStoryObjects(links)
     console.log(this.extractedLinks);
