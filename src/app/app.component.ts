@@ -71,6 +71,7 @@ extractLinks(): string[] {
     this.finalparagraphToRead = ''
     const links = this.extractLinks();
     this.extractedLinks = this.convertUrlsToStoryObjects(links)
+    debugger
     console.log(this.extractedLinks);
     this.startReading()
     this.extractingLinkLoader = !(this.extractedLinks.length > 0)
@@ -78,15 +79,15 @@ extractLinks(): string[] {
 
   convertUrlsToStoryObjects(urls: string[]) {
     const result: { id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
-  
+    debugger
     urls.forEach(url => {
       // Step 1: Remove base URL and split by '-'
       const splitUrl = url.replace('https://www.wattpad.com/', '').split('-');
   
       // Step 2: Extract the ID (the first part) and the last two parts for season and part
       const id = splitUrl[0]; // The first element is the ID
-      const seasonMatch = splitUrl[8]; // This might be a string or undefined
-      const partMatch = splitUrl[10]; // This might also be a string or undefined
+      const seasonMatch =  1; // This might be a string or undefined
+      const partMatch =  1; // This might also be a string or undefined
   
       // Step 3: Convert season and part to numbers, fallback to NaN if not a valid number
       const seasonNo = seasonMatch ? Number(seasonMatch) : 1;
