@@ -193,8 +193,7 @@
     flex-direction: column;
   }
   .right-body {
-    flex: 1;
-    display: flex;
+    display: grid;
     overflow: hidden;
   }
   .top-bar {
@@ -375,7 +374,7 @@
     background-color: #01c828;
   }
   .message {
-    margin: 20px 10px;
+    margin-top: 10px;
     flex: 1;
     background-color: white;
     padding: 25px;

@@ -44,7 +44,6 @@ export class AppComponent {
         callback();
       }
     } catch (err) {
-      console.error('Failed to copy text: ', err);
       this.errorMessage = 'Failed to copy text to clipboard';
     } finally {
       // Remove the temporary textarea from the DOM
@@ -78,9 +77,7 @@ export class AppComponent {
         }
       });
 
-      console.log('Extracted links count:', links.length);
     } catch (error) {
-      console.error('Error extracting links:', error);
       this.errorMessage = 'Error extracting links from the content';
     }
 
@@ -100,7 +97,6 @@ export class AppComponent {
     }
 
     this.extractedLinks = this.convertUrlsToStoryObjects(links);
-    console.log('Converted story objects:', this.extractedLinks);
     
     if (this.extractedLinks.length > 0) {
       this.startReading();
@@ -145,7 +141,6 @@ export class AppComponent {
           result.push({ id, seasonNo, partNo, copied, link });
         }
       } catch (error) {
-        console.error('Error processing URL:', url, error);
       }
     });
 
@@ -170,7 +165,7 @@ export class AppComponent {
       return;
     }
 
-    this.http.post('http://localhost:3000/getAllBooks', this.extractedLinks).subscribe({
+    this.http.post('https://kdeditor.onrender.com/api/getAllBooks', this.extractedLinks).subscribe({
       next: (response: any) => {
         this.readingloader = false;
         this.extractingLinkLoader = false;
@@ -188,13 +183,11 @@ export class AppComponent {
               this.finalparagraphToRead = String(parsedData);
             }
             
-            console.log('Data set, triggering change detection...');
             
           } else {
             this.errorMessage = 'Invalid response format from server';
           }
         } catch (e) {
-          console.error('Error parsing JSON:', e);
           this.errorMessage = 'Error processing the response data';
         }
         
@@ -202,7 +195,6 @@ export class AppComponent {
         this.cdRef.detectChanges();
       },
       error: (error) => {
-        console.error('HTTP Error:', error);
         this.readingloader = false;
         this.extractingLinkLoader = false;
         this.cdRef.detectChanges(); // Add this
@@ -230,7 +222,6 @@ export class AppComponent {
     this.finalparagraphToRead = '';
     this.extractedLinks = [];
 
-    console.log('Starting extraction for URL:', this.targetUrl);
 
     // Wait for browser to be idle
     if ('requestIdleCallback' in window) {
@@ -254,7 +245,6 @@ export class AppComponent {
 
   private async extractAndOpen(): Promise<void> {
     try {
-      console.log('Fetching content from URL:', this.targetUrl);
       
       const html: any = await this.http.get(this.targetUrl, { 
         responseType: 'text',
@@ -269,7 +259,6 @@ export class AppComponent {
 
       if (ul) {
         this.storyParts = ul;
-        console.log('Successfully found story parts');
         this.onExtractLinks();
 
         // Copy the HTML content to clipboard
@@ -280,18 +269,14 @@ export class AppComponent {
           textArea.select();
           document.execCommand('copy');
           document.body.removeChild(textArea);
-          console.log('HTML copied to clipboard!');
         } catch (copyError) {
-          console.warn('Failed to copy HTML to clipboard:', copyError);
         }
       } else {
         this.errorMessage = 'No story parts found on this page. Please check if the URL is correct and contains story content.';
         this.readingloader = false;
         this.extractingLinkLoader = false;
-        console.warn('No <ul> found with aria-label="story-parts"');
       }
     } catch (error: any) {
-      console.error('Failed to extract content:', error);
       this.readingloader = false;
       this.extractingLinkLoader = false;
       
