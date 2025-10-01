@@ -1,19 +1,9 @@
+<!-- wattpad-extractor.component.html -->
 <div class="dashboard">
   <div class="right-side">
     <div class="right-header">
       <div class="top-bar">
-        <div class="top-bar-justify">
-          <div class="big-inbox">Stories</div>
-          <div class="top-bar-items">
-            <div class="notif">
-              <div class="online pink"></div>
-              <img src="https://i.ibb.co/VJm73Hz/notifications-button.png" />
-            </div>
-            <img src="https://i.ibb.co/vz4HYJb/envelope.png" />
-            <img src="https://i.ibb.co/52Vkq4M/earth-globe.png" />
-            <div class="icon-name5"> English </div>
-          </div>
-        </div>
+        <div class="big-inbox">Wattpad Story Extractor</div>
       </div>
     </div>
     
@@ -21,40 +11,23 @@
       <!-- Error Message Display -->
       <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
-        <button *ngIf="targetUrl" (click)="retry()" class="retry-btn">Retry</button>
-        <button (click)="errorMessage = ''" class="close-btn">Close</button>
+        <div>
+          <button *ngIf="targetUrl" (click)="retry()" class="retry-btn">Retry</button>
+        </div>
       </div>
       
       <div class="scroll-cards">
-        <div class="folders" *ngIf="false">Refine by tag:</div>
-        
-        <div class="section1" *ngIf="false">
-          <button class="btn buton1"> Important
-            <span class="tag"><img src="https://i.ibb.co/Zdx3jGx/tag.png" /></span>
-          </button>
-          <button class="btn buton2"> New
-            <span class="tag"><img src="https://i.ibb.co/N1SMfgQ/tag.png" /></span>
-          </button>
-        </div>
-        
-        <div class="section2" *ngIf="false">
-          <button class="btn buton3"> Old
-            <span class="tag"><img src="https://i.ibb.co/C5q0MDM/tag.png" /></span>
-          </button>
-          <button class="btn buton4"> Priority
-            <span class="tag"><img src="https://i.ibb.co/DMmSZW0/tag.png" /></span>
-          </button>
-        </div>
-        
         <div class="input-button">
-          <input type="text" placeholder="Enter Wattpad Story URL" [(ngModel)]="targetUrl">
+          <input type="text" 
+                 placeholder="Enter Wattpad Story URL" 
+                 [(ngModel)]="targetUrl">
           <button class="btn2 butona" 
                   (click)="autoExtractOnIdle()" 
                   [disabled]="readingloader || !targetUrl">
             <span *ngIf="!readingloader">Process</span>
             <span *ngIf="readingloader">Processing...</span>
             <span class="tag">
-              <img src="https://i.ibb.co/6W40kTg/forward-arrow.png" />
+              <img src="https://i.ibb.co/6W40kTg/forward-arrow.png" alt="Process" />
             </span>
           </button>
         </div>
@@ -64,7 +37,7 @@
         <div class="from">
           <span class="who">From: </span>PopCopy
         </div>
-        <div class="mes-date">Today's Date : {{today}}</div>
+        <div class="mes-date">Today's Date: {{today}}</div>
         
         <div class="message-from">
           <!-- Loader when processing -->
@@ -74,7 +47,7 @@
           </div>
           
           <!-- Content when ready -->
-          <div *ngIf="finalparagraphToRead" class="content-section">
+          <div *ngIf="finalparagraphToRead && !readingloader" class="content-section">
             <div class="content-text">{{ finalparagraphToRead }}</div>
           </div>
           
@@ -85,9 +58,9 @@
         </div>
 
         <img class="copy-button" 
-             *ngIf="finalparagraphToRead" 
+             *ngIf="finalparagraphToRead && !readingloader" 
              (click)="onCopyClick(finalparagraphToRead)" 
-             src="assets/copy.jpg" 
+             src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png" 
              alt="Copy content" />
       </div>
     </div>
