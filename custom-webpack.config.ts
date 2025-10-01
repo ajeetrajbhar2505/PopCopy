@@ -1,7 +1,4 @@
-const dotenv = require('dotenv');
-const webpack = require('webpack');
 const WebpackObfuscator = require('webpack-obfuscator');
-const env = dotenv.config().parsed || {};
 module.exports = {
   plugins: [
     new WebpackObfuscator(
