@@ -7,10 +7,9 @@
           <div class="icon1">
             <img src="https://i.ibb.co/qdgf3TJ/envelope.png" />
           </div>
-          <div class="icon-name1">Dashboard
-          </div>
+          <div class="icon-name1">Dashboard</div>
         </div>
-            <div class="folder-icons">
+        <div class="folder-icons">
           <div class="icon1">
             <img src="https://i.ibb.co/6ZH9kK3/star.png" />
           </div>
@@ -22,24 +21,18 @@
           </div>
           <div class="icon-name">Shared Story</div>
         </div>
-    
-
-  
       </div>
     </div>
   </div>
+  
   <div class="right-side">
     <div class="right-header">
       <div class="top-bar">
         <div class="top-bar-justify">
-          <div class="big-inbox">
-            Stories
-          </div>
-
+          <div class="big-inbox">Stories</div>
           <div class="top-bar-items">
             <div class="notif">
-              <div class="online pink">
-              </div>
+              <div class="online pink"></div>
               <img src="https://i.ibb.co/VJm73Hz/notifications-button.png" />
             </div>
             <img src="https://i.ibb.co/vz4HYJb/envelope.png" />
@@ -48,58 +41,81 @@
           </div>
         </div>
       </div>
-    
     </div>
+    
     <div class="right-body">
+      <!-- Error Message Display -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+        <button *ngIf="targetUrl" (click)="retry()" class="retry-btn">Retry</button>
+        <button (click)="errorMessage = ''" class="close-btn">Close</button>
+      </div>
+      
       <div class="scroll-cards">
-         <div class="folders" *ngIf="false">
-          Refine by tag:
-        </div>
+        <div class="folders" *ngIf="false">Refine by tag:</div>
+        
         <div class="section1" *ngIf="false">
           <button class="btn buton1"> Important
-          <span class="tag">
-            <img src="https://i.ibb.co/Zdx3jGx/tag.png"/></span>
+            <span class="tag"><img src="https://i.ibb.co/Zdx3jGx/tag.png" /></span>
           </button>
-
           <button class="btn buton2"> New
-            <span class="tag">
-            <img src="https://i.ibb.co/N1SMfgQ/tag.png"/></span>
+            <span class="tag"><img src="https://i.ibb.co/N1SMfgQ/tag.png" /></span>
           </button>
         </div>
+        
         <div class="section2" *ngIf="false">
           <button class="btn buton3"> Old
-             <span class="tag">
-            <img src="https://i.ibb.co/C5q0MDM/tag.png"/></span>
-           </button>
+            <span class="tag"><img src="https://i.ibb.co/C5q0MDM/tag.png" /></span>
+          </button>
           <button class="btn buton4"> Priority
-             <span class="tag">
-            <img src="https://i.ibb.co/DMmSZW0/tag.png"/></span>
-           </button>
+            <span class="tag"><img src="https://i.ibb.co/DMmSZW0/tag.png" /></span>
+          </button>
         </div>
+        
         <div class="input-button">
-          <input type="text" placeholder="Enter Ul DIV" [(ngModel)]="storyParts">
-          <button class="btn2 butona" (click)="onExtractLinks()"> Process
-            <span class="tag"> 
-             <img src="https://i.ibb.co/6W40kTg/forward-arrow.png"/>
+          <input type="text" placeholder="Enter Wattpad Story URL" [(ngModel)]="targetUrl">
+          <button class="btn2 butona" 
+                  (click)="autoExtractOnIdle()" 
+                  [disabled]="readingloader || !targetUrl">
+            <span *ngIf="!readingloader">Process</span>
+            <span *ngIf="readingloader">Processing...</span>
+            <span class="tag">
+              <img src="https://i.ibb.co/6W40kTg/forward-arrow.png" />
             </span>
-         </button>
+          </button>
         </div>
-    
-
       </div>
+      
       <div class="message">
         <div class="from">
           <span class="who">From: </span>PopCopy
         </div>
-        <div class="mes-date">
-          Today's Date  : {{today}}
-        </div>
+        <div class="mes-date">Today's Date : {{today}}</div>
+        
         <div class="message-from">
-      <div class="loader" *ngIf="readingloader"></div>
-           {{finalparagraphToRead}}
+          <!-- Loader when processing -->
+          <div *ngIf="readingloader" class="loading-section">
+            <div class="loader"></div>
+            <p>Extracting story content... Please wait.</p>
+          </div>
+          
+          <!-- Content when ready -->
+          <div *ngIf="finalparagraphToRead" class="content-section">
+            <div class="content-text">{{ finalparagraphToRead }}</div>
+          </div>
+          
+          <!-- Empty state -->
+          <div *ngIf="!readingloader && !finalparagraphToRead && !errorMessage" class="empty-state">
+            <p>Enter a Wattpad story URL and click "Process" to extract content.</p>
+          </div>
         </div>
 
-             <img class="copy-button" (click)="onCopyClick(finalparagraphToRead)" src="assets/copy.jpg"/>
+        <img class="copy-button" 
+             *ngIf="finalparagraphToRead" 
+             (click)="onCopyClick(finalparagraphToRead)" 
+             src="assets/copy.jpg" 
+             alt="Copy content" />
       </div>
     </div>
   </div>
+</div>

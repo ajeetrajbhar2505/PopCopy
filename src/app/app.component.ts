@@ -1,131 +1,328 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  storyParts:string = ""
-  finalparagraphToRead:string = ''
-  readingloader:boolean = false
-  today  = new Date('2025-01-27').toLocaleDateString('en-GB', {
+  targetUrl: string = "";
+  storyParts: any;
+  finalparagraphToRead: string = '';
+  readingloader: boolean = false;
+  today = new Date().toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
   });
-  extractingLinkLoader:boolean = false
-  extractedLinks:{ id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
+  extractingLinkLoader: boolean = false;
+  extractedLinks: { id: string; seasonNo: number; partNo: number, copied: boolean, link: string }[] = [];
   currentBookParagraphs: string[] = [];
+  errorMessage: string = '';
+  isLoading: boolean = false;
 
-
-  constructor(private http:HttpClient){}
+  constructor(private http: HttpClient,private cdRef: ChangeDetectorRef) { }
 
   // Method to copy text to clipboard
   copyToClipboard(text: string, callback?: () => void): void {
+    if (!text) {
+      this.errorMessage = 'No text to copy';
+      return;
+    }
+
     const textArea = document.createElement('textarea');
     textArea.value = text;
     document.body.appendChild(textArea);
 
     // Select the text and execute the copy command
     textArea.select();
-    document.execCommand('copy');
-
-    // Remove the temporary textarea from the DOM
-    document.body.removeChild(textArea);
-
-    // Execute callback if provided
-    if (callback) {
-      callback();
+    
+    try {
+      document.execCommand('copy');
+      if (callback) {
+        callback();
+      }
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      this.errorMessage = 'Failed to copy text to clipboard';
+    } finally {
+      // Remove the temporary textarea from the DOM
+      document.body.removeChild(textArea);
     }
   }
 
-  onCopyClick(textToCopy:string): void {
+  onCopyClick(textToCopy: string): void {
     this.copyToClipboard(textToCopy, () => {
-      alert('Text copied to clipboard!')
+      alert('Text copied to clipboard!');
     });
   }
 
-// Assuming storyParts contains the HTML string
-extractLinks(): string[] {
-  this.extractingLinkLoader = true
-  const links: string[] = [];
-  
-  // Create a new DOMParser to parse the HTML string
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(this.storyParts, 'text/html'); // Parse the HTML string
-  
-  // Get all anchor tags in the parsed document
-  const anchorTags = doc.querySelectorAll('a');
-  
-  // Loop through each anchor tag and get the href attribute
-  anchorTags.forEach((anchor: HTMLAnchorElement) => {
-    links.push(anchor.href);
-  });
+  // Extract links from the story parts
+  extractLinks(): string[] {
+    if (!this.storyParts) {
+      this.errorMessage = 'No story parts available to extract links';
+      return [];
+    }
 
-  return links; // Return the array of links
-}
+    const links: string[] = [];
+    
+    try {
+      // Get all anchor tags in the parsed document
+      const anchorTags = this.storyParts.querySelectorAll('a');
 
-  onExtractLinks() {
-    this.finalparagraphToRead = ''
-    const links = this.extractLinks();
-    this.extractedLinks = this.convertUrlsToStoryObjects(links)
-    debugger
-    console.log(this.extractedLinks);
-    this.startReading()
-    this.extractingLinkLoader = !(this.extractedLinks.length > 0)
+      // Loop through each anchor tag and get the href attribute
+      anchorTags.forEach((anchor: HTMLAnchorElement) => {
+        if (anchor.href) {
+          links.push(anchor.href);
+        }
+      });
+
+      console.log('Extracted links count:', links.length);
+    } catch (error) {
+      console.error('Error extracting links:', error);
+      this.errorMessage = 'Error extracting links from the content';
+    }
+
+    return links;
   }
 
-  convertUrlsToStoryObjects(urls: string[]) {
-    const result: { id: string; seasonNo: number; partNo: number,copied:boolean,link:string }[] = [];
-    debugger
+  onExtractLinks(): void {
+    this.finalparagraphToRead = '';
+    this.errorMessage = '';
+    
+    const links = this.extractLinks();
+    
+    if (links.length === 0) {
+      this.errorMessage = 'No links found to process';
+      this.readingloader = false;
+      return;
+    }
+
+    this.extractedLinks = this.convertUrlsToStoryObjects(links);
+    console.log('Converted story objects:', this.extractedLinks);
+    
+    if (this.extractedLinks.length > 0) {
+      this.startReading();
+    } else {
+      this.errorMessage = 'No valid story links found';
+      this.readingloader = false;
+      this.extractingLinkLoader = false;
+    }
+  }
+
+  convertUrlsToStoryObjects(urls: string[]): { id: string; seasonNo: number; partNo: number, copied: boolean, link: string }[] {
+    const result: { id: string; seasonNo: number; partNo: number, copied: boolean, link: string }[] = [];
+    
     urls.forEach(url => {
-      // Step 1: Remove base URL and split by '-'
-      const splitUrl = url.replace('https://www.wattpad.com/', '').split('-');
-  
-      // Step 2: Extract the ID (the first part) and the last two parts for season and part
-      const id = splitUrl[0]; // The first element is the ID
-      const seasonMatch =  1; // This might be a string or undefined
-      const partMatch =  1; // This might also be a string or undefined
-  
-      // Step 3: Convert season and part to numbers, fallback to NaN if not a valid number
-      const seasonNo = seasonMatch ? Number(seasonMatch) : 1;
-      const partNo = partMatch ? Number(partMatch) : 1;
-      var copied = false
-      var link = `https://www.wattpad.com/apiv2/?m=storytext&id=${id}&page=${partNo}`
-  
-      // Step 4: Validate and push the result if all values are found
-      if (id && !isNaN(seasonNo) && !isNaN(partNo)) {
-        result.push({ id, seasonNo, partNo,copied,link });
+      try {
+        // Step 1: Remove base URL and split by '-'
+        const cleanUrl = url.replace('https://www.wattpad.com/', '').replace('http://www.wattpad.com/', '');
+        const splitUrl = cleanUrl.split('-');
+
+        // Step 2: Extract the ID (the first part)
+        const id = splitUrl[0];
+        
+        // For Wattpad URLs, we need to extract season and part numbers properly
+        let seasonNo = 1;
+        let partNo = 1;
+
+        // Look for patterns like "season-1-part-1" or similar
+        for (let i = 0; i < splitUrl.length; i++) {
+          if (splitUrl[i] === 'season' && splitUrl[i + 1]) {
+            seasonNo = parseInt(splitUrl[i + 1]) || 1;
+          }
+          if (splitUrl[i] === 'part' && splitUrl[i + 1]) {
+            partNo = parseInt(splitUrl[i + 1]) || 1;
+          }
+        }
+
+        const copied = false;
+        const link = `https://www.wattpad.com/apiv2/?m=storytext&id=${id}&page=${partNo}`;
+
+        // Validate and push the result
+        if (id) {
+          result.push({ id, seasonNo, partNo, copied, link });
+        }
+      } catch (error) {
+        console.error('Error processing URL:', url, error);
       }
     });
-  
+
     return result;
   }
 
   removeHtmlTags(input: string): string {
-    return input.replace(/<\/?[^>]+(>|$)/g, "");  // Match all HTML tags
+    if (!input) return '';
+    return input.replace(/<\/?[^>]+(>|$)/g, "");
   }
-  
+
   getTextWithoutHtml(content: string): string {
     return this.removeHtmlTags(content);
   }
-  
 
-  async startReading() {
-    this.readingloader = true;
-    this.http.post('http://localhost:3000/getAllBooks', this.extractedLinks).subscribe((response: any) => {
+
+  startReading(): void {
+    if (this.extractedLinks.length === 0) {
+      this.errorMessage = 'No links available to read';
       this.readingloader = false;
-      try {
-        debugger
-        const parsedData = response.books
-        this.finalparagraphToRead = this.getTextWithoutHtml(parsedData);
-      } catch (e) {
-        console.error('Error parsing JSON:', e);
-        // Optionally set a fallback or notify the user
+      this.cdRef.detectChanges(); // Add this
+      return;
+    }
+
+    this.http.post('http://localhost:3000/getAllBooks', this.extractedLinks).subscribe({
+      next: (response: any) => {
+        this.readingloader = false;
+        this.extractingLinkLoader = false;
+        
+        try {
+          if (response && response.books) {
+            const parsedData = response.books;
+            
+            // Ensure it's a string
+            if (typeof parsedData === 'string') {
+              this.finalparagraphToRead = parsedData;
+            } else if (typeof parsedData === 'object') {
+              this.finalparagraphToRead = JSON.stringify(parsedData);
+            } else {
+              this.finalparagraphToRead = String(parsedData);
+            }
+            
+            console.log('Data set, triggering change detection...');
+            
+          } else {
+            this.errorMessage = 'Invalid response format from server';
+          }
+        } catch (e) {
+          console.error('Error parsing JSON:', e);
+          this.errorMessage = 'Error processing the response data';
+        }
+        
+        // Trigger change detection
+        this.cdRef.detectChanges();
+      },
+      error: (error) => {
+        console.error('HTTP Error:', error);
+        this.readingloader = false;
+        this.extractingLinkLoader = false;
+        this.cdRef.detectChanges(); // Add this
+        // ... error handling
       }
     });
   }
-  
+
+  async autoExtractOnIdle(): Promise<void> {
+    // Validate input
+    if (!this.targetUrl) {
+      this.errorMessage = 'Please enter a valid URL';
+      return;
+    }
+
+    if (!this.targetUrl.startsWith('http')) {
+      this.errorMessage = 'Please enter a valid URL starting with http:// or https://';
+      return;
+    }
+
+    // Reset states
+    this.readingloader = true;
+    this.extractingLinkLoader = true;
+    this.errorMessage = '';
+    this.finalparagraphToRead = '';
+    this.extractedLinks = [];
+
+    console.log('Starting extraction for URL:', this.targetUrl);
+
+    // Wait for browser to be idle
+    if ('requestIdleCallback' in window) {
+      return new Promise((resolve) => {
+        (window as any).requestIdleCallback(() => {
+          this.extractAndOpen();
+          resolve();
+        });
+      });
+    } else {
+      // Fallback: wait for page load and short delay
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(() => this.extractAndOpen(), 1000);
+        });
+      } else {
+        setTimeout(() => this.extractAndOpen(), 1000);
+      }
+    }
+  }
+
+  private async extractAndOpen(): Promise<void> {
+    try {
+      console.log('Fetching content from URL:', this.targetUrl);
+      
+      const html: any = await this.http.get(this.targetUrl, { 
+        responseType: 'text',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      }).toPromise();
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const ul: any = doc.querySelector('ul[aria-label="story-parts"]');
+
+      if (ul) {
+        this.storyParts = ul;
+        console.log('Successfully found story parts');
+        this.onExtractLinks();
+
+        // Copy the HTML content to clipboard
+        try {
+          const textArea = document.createElement('textarea');
+          textArea.value = ul.outerHTML;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          console.log('HTML copied to clipboard!');
+        } catch (copyError) {
+          console.warn('Failed to copy HTML to clipboard:', copyError);
+        }
+      } else {
+        this.errorMessage = 'No story parts found on this page. Please check if the URL is correct and contains story content.';
+        this.readingloader = false;
+        this.extractingLinkLoader = false;
+        console.warn('No <ul> found with aria-label="story-parts"');
+      }
+    } catch (error: any) {
+      console.error('Failed to extract content:', error);
+      this.readingloader = false;
+      this.extractingLinkLoader = false;
+      
+      if (error.status === 0) {
+        this.errorMessage = 'Network error: Cannot fetch the URL. Please check your internet connection and CORS settings.';
+      } else if (error.status === 404) {
+        this.errorMessage = 'URL not found. Please check if the URL is correct.';
+      } else if (error.status === 403) {
+        this.errorMessage = 'Access forbidden. The website might be blocking requests.';
+      } else {
+        this.errorMessage = `Failed to load content: ${error.message || 'Unknown error'}`;
+      }
+    }
+  }
+
+  // Utility method to clear all data
+  clearData(): void {
+    this.targetUrl = '';
+    this.finalparagraphToRead = '';
+    this.extractedLinks = [];
+    this.errorMessage = '';
+    this.readingloader = false;
+    this.extractingLinkLoader = false;
+  }
+
+  // Method to retry the last operation
+  retry(): void {
+    if (this.targetUrl) {
+      this.autoExtractOnIdle();
+    } else {
+      this.errorMessage = 'No URL to retry';
+    }
+  }
 }
