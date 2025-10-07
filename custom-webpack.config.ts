@@ -1,27 +1,27 @@
 const WebpackObfuscator = require('webpack-obfuscator');
 module.exports = {
   plugins: [
-    new WebpackObfuscator(
-      {
-        stringArray: true,
-        stringArrayThreshold: 0.8,
-        rotateStringArray: true,
-        shuffleStringArray: true,
-        identifierNamesGenerator: 'hexadecimal',
-        debugProtection: true,
-        debugProtectionInterval: 500,
-        selfDefending: true,
-        compact: true,
-        disableConsoleOutput: true,
-        sourceMap: false,
-      },
-      [
-        'vendor.js', // exact file name
-        'vendors~*.js', // glob-like pattern
-        '**/vendor/*.js',
-        'vendor.[0-9a-f]*.js',
-      ]
-    ),
+    // new WebpackObfuscator(
+    //   {
+    //     stringArray: true,
+    //     stringArrayThreshold: 0.8,
+    //     rotateStringArray: true,
+    //     shuffleStringArray: true,
+    //     identifierNamesGenerator: 'hexadecimal',
+    //     debugProtection: true,
+    //     debugProtectionInterval: 500,
+    //     selfDefending: true,
+    //     compact: true,
+    //     disableConsoleOutput: true,
+    //     sourceMap: false,
+    //   },
+    //   [
+    //     'vendor.js', // exact file name
+    //     'vendors~*.js', // glob-like pattern
+    //     '**/vendor/*.js',
+    //     'vendor.[0-9a-f]*.js',
+    //   ]
+    // ),
   ],
 };
  

@@ -1,13 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component } from '@angular/core';
 
+interface Links {
+  href: string;
+  chapterName: string
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  targetUrl: string = "";
+  targetUrl: string = "https://www.wattpad.com/story/285941836-from-a-boy-to-a-girl";
   storyParts: any;
   finalparagraphToRead: string = '';
   readingloader: boolean = false;
@@ -22,7 +27,7 @@ export class AppComponent {
   errorMessage: string = '';
   isLoading: boolean = false;
 
-  constructor(private http: HttpClient,private cdRef: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private cdRef: ChangeDetectorRef) { }
 
   // Method to copy text to clipboard
   copyToClipboard(text: string, callback?: () => void): void {
@@ -37,7 +42,7 @@ export class AppComponent {
 
     // Select the text and execute the copy command
     textArea.select();
-    
+
     try {
       document.execCommand('copy');
       if (callback) {
@@ -58,14 +63,14 @@ export class AppComponent {
   }
 
   // Extract links from the story parts
-  extractLinks(): string[] {
+  extractLinks(): Links[] {
     if (!this.storyParts) {
       this.errorMessage = 'No story parts available to extract links';
       return [];
     }
 
-    const links: string[] = [];
-    
+    const links: Links[] = [];
+
     try {
       // Get all anchor tags in the parsed document
       const anchorTags = this.storyParts.querySelectorAll('a');
@@ -73,9 +78,25 @@ export class AppComponent {
       // Loop through each anchor tag and get the href attribute
       anchorTags.forEach((anchor: HTMLAnchorElement) => {
         if (anchor.href) {
-          links.push(anchor.href);
+            let chapterName = anchor.text;
+            
+            // Parse the innerHTML string
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(anchor.innerHTML, 'text/html');
+            
+            // Find wpYp- div
+            const wpYpDiv = doc.querySelector('.wpYp-');
+            if (wpYpDiv) {
+                chapterName = wpYpDiv.textContent || anchor.innerHTML || anchor.innerText;
+            }
+            
+            let Links: Links = {
+                href: anchor.href,
+                chapterName: chapterName
+            }
+            links.push(Links);
         }
-      });
+    });
 
     } catch (error) {
       this.errorMessage = 'Error extracting links from the content';
@@ -84,12 +105,13 @@ export class AppComponent {
     return links;
   }
 
+
   onExtractLinks(): void {
     this.finalparagraphToRead = '';
     this.errorMessage = '';
-    
+
     const links = this.extractLinks();
-    
+
     if (links.length === 0) {
       this.errorMessage = 'No links found to process';
       this.readingloader = false;
@@ -97,7 +119,6 @@ export class AppComponent {
     }
 
     this.extractedLinks = this.convertUrlsToStoryObjects(links);
-    
     if (this.extractedLinks.length > 0) {
       this.startReading();
     } else {
@@ -107,18 +128,18 @@ export class AppComponent {
     }
   }
 
-  convertUrlsToStoryObjects(urls: string[]): { id: string; seasonNo: number; partNo: number, copied: boolean, link: string }[] {
-    const result: { id: string; seasonNo: number; partNo: number, copied: boolean, link: string }[] = [];
-    
+  convertUrlsToStoryObjects(urls: Links[]): { id: string; seasonNo: number; partNo: number, copied: boolean, link: string }[] {
+    const result: { id: string; seasonNo: number; partNo: number, copied: boolean, link: string, chapterName: string }[] = [];
+
     urls.forEach(url => {
       try {
         // Step 1: Remove base URL and split by '-'
-        const cleanUrl = url.replace('https://www.wattpad.com/', '').replace('http://www.wattpad.com/', '');
+        const cleanUrl = url.href.replace('https://www.wattpad.com/', '').replace('http://www.wattpad.com/', '');
         const splitUrl = cleanUrl.split('-');
 
         // Step 2: Extract the ID (the first part)
         const id = splitUrl[0];
-        
+
         // For Wattpad URLs, we need to extract season and part numbers properly
         let seasonNo = 1;
         let partNo = 1;
@@ -135,10 +156,11 @@ export class AppComponent {
 
         const copied = false;
         const link = `https://www.wattpad.com/apiv2/?m=storytext&id=${id}&page=${partNo}`;
+        const chapterName = url.chapterName
 
         // Validate and push the result
         if (id) {
-          result.push({ id, seasonNo, partNo, copied, link });
+          result.push({ id, seasonNo, partNo, copied, link, chapterName });
         }
       } catch (error) {
       }
@@ -165,15 +187,17 @@ export class AppComponent {
       return;
     }
 
-    this.http.post('https://kdeditor.onrender.com/api/getAllBooks', this.extractedLinks).subscribe({
+    this.http.post('http://localhost:3000/api/getAllBooks', this.extractedLinks).subscribe({
       next: (response: any) => {
         this.readingloader = false;
         this.extractingLinkLoader = false;
-        
+        console.log(response);
+
+
         try {
           if (response && response.books) {
             const parsedData = response.books;
-            
+
             // Ensure it's a string
             if (typeof parsedData === 'string') {
               this.finalparagraphToRead = parsedData;
@@ -182,15 +206,15 @@ export class AppComponent {
             } else {
               this.finalparagraphToRead = String(parsedData);
             }
-            
-            
+
+
           } else {
             this.errorMessage = 'Invalid response format from server';
           }
         } catch (e) {
           this.errorMessage = 'Error processing the response data';
         }
-        
+
         // Trigger change detection
         this.cdRef.detectChanges();
       },
@@ -245,14 +269,14 @@ export class AppComponent {
 
   private async extractAndOpen(): Promise<void> {
     try {
-      
-      const html: any = await this.http.get(this.targetUrl, { 
+
+      const html: any = await this.http.get(this.targetUrl, {
         responseType: 'text',
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
       }).toPromise();
-      
+
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
       const ul: any = doc.querySelector('ul[aria-label="story-parts"]');
@@ -279,7 +303,7 @@ export class AppComponent {
     } catch (error: any) {
       this.readingloader = false;
       this.extractingLinkLoader = false;
-      
+
       if (error.status === 0) {
         this.errorMessage = 'Network error: Cannot fetch the URL. Please check your internet connection and CORS settings.';
       } else if (error.status === 404) {
